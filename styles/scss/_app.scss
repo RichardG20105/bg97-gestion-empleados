@@ -1,0 +1,162 @@
+body {
+  background-color: $bodycolor !important;
+}
+
+.sidebar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: $primary;
+  height: 100%;
+  width: 80px;
+  transition: width 0.3s ease, padding-right 0.3s ease;
+
+  &.active{
+    width: 260px;
+    padding-right: 15px;
+  }
+  
+  .logo-details{
+    height: 60px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding-top: 15px;
+    padding-left: 15px;
+
+    a {
+      i {
+        font-size: 25px;
+        color: #fff;
+        height: 40px;
+        min-width: 50px;
+        text-align: center;
+        line-height: 40px;
+        cursor: pointer;
+  
+        &.active{
+          min-width: 68px;
+        }
+      }
+      &:hover{
+        background: white;
+        border-radius: 10px;
+
+        i {
+          color: $primary
+        }
+      }
+    }
+    
+    .logo-name{
+      font-size: 22px;
+      color: #fff;
+      font-weight: 600;
+      width: 100%;
+    }
+  }
+}
+
+.nav-links{
+  height: 100%;
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+
+  li{
+    position: relative;
+    list-style: none;
+
+    i{
+      height: 40px;
+      min-width: 50px;
+      text-align: center;
+      line-height: 40px;
+      color: white;
+      font-size: 20px;
+
+      &.active{
+        min-width: 60px;
+      }
+    }
+
+    a{
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+
+      .link-name{
+        font-size: 15px;
+        font-weight: 400;
+        color: white;
+        opacity: 0;
+        transition: opacity 0.5s ease-in;
+
+        &.active {
+          opacity: 1;
+        }
+      }
+    }
+    &.active {
+      background: white;
+      border-radius: 10px;
+      .link-name{
+        color: $primary;
+      }
+  
+      i{
+        color: $primary;
+      }
+    }
+  }
+  :hover {
+    background: white;
+    border-radius: 10px;
+    .link-name{
+      color: $primary;
+    }
+
+    i{
+      color: $primary;
+    }
+  }
+}
+
+.divisor {
+  color: #fff;
+}
+
+.sidecontent {
+  position: fixed;
+  right: 0;
+  background: white;
+  height: 100%;
+  width: calc(100% - 80px);
+  padding: 10px 10px 0px 10px;
+  transition: width 0.3s ease;
+
+  &.active{
+    width: calc(100% - 260px);
+  }
+}
+
+
+.container-search {
+  width: 100%;
+  height: 100px;
+  background: $bodycolor;
+
+  .button{
+    display: flex;
+    justify-content: space-between;
+    font-size: 15px;
+    font-weight: 600;
+    background: $primary;
+    color: white;
+
+    i {
+      height: 50px;
+      min-width: 60px;
+    }
+  }
+}
