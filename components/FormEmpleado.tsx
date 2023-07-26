@@ -1,6 +1,10 @@
 import { EmpleadoApi } from '@/apis/EmpleadoApi';
 import React, { useEffect, useState } from 'react'
-import { Button, Col, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
+import { Button, Col, Form, FormFeedback, FormGroup, Input, Label, Row } from 'reactstrap'
+import { ToastContainer ,toast } from 'react-toastify';
+import EmpleadoHook from '@/hooks/EmpleadoHook';
+import { useRouter } from 'next/router';
+
 
 const JobOptions = [
   {
@@ -21,17 +25,19 @@ const JobOptions = [
 interface Props {
   id?: string,
   type: "Crear" | "Actualizar";
-  action: () => void
+  action: (message: string, type: any) => void
 }
 
 const FormEmpleado = ({id, type, action}: Props) => {
+  const router = useRouter();
   const [sub, setSub] = useState(false)
+  const buttonName = type === "Crear" ? "Guardar" :"Actualizar"
   const [formData, setFormData] = useState({
     num_document: "",
     name: "",
     lastname: "",
     cellphone: "",
-    job_position: "",
+    job_position: " ",
   })
 
   const [validData, setValidData] = useState({
@@ -40,14 +46,28 @@ const FormEmpleado = ({id, type, action}: Props) => {
     job_position: false
   });
 
+
   useEffect(() => {
     if(type === "Actualizar"){
       fetchPerson();
     }
   }, [])
 
-  const fetchPerson = () => {
+  const fetchPerson = async() => {
     console.log(id)
+    try {
+      const {data} = await EmpleadoApi.get(`/employees/api/${id}`);
+      if(data.response){
+        setFormData(data.data)
+        setValidData({
+          num_document: true,
+          name: true,
+          job_position: true
+        });
+      }
+    } catch (error: any) {
+      console.log(error.message)
+    }
   }
   
 
@@ -55,26 +75,63 @@ const FormEmpleado = ({id, type, action}: Props) => {
     event.preventDefault();
     setSub(true);
     
-    console.log(isFormValid())
     if(isFormValid()){
       if(type === "Crear"){
         CreatePerson();
+      } else{
+        UpdatePerson();
       }
     }
   };
+
+  const clearFormData = () => {
+    setFormData({
+      num_document: "",
+      name: "",
+      lastname: "",
+      job_position: "",
+      cellphone: "",
+    })
+
+    setValidData({
+      name: false,
+      num_document: false,
+      job_position: false
+    })
+  }
 
   const CreatePerson = async() => {
     try {
       const {data} = await EmpleadoApi.post('/employees/api', formData)
       if(data.response){
-        console.log("Exito")
+        action("Persona Creada Exitosamente", "success")
+        clearFormData();
       }
       else{
-        console.log(data.message);
+        action(data.message, "error");
       }
     } catch (error: any) {
-      console.log(error.message)
+      action(error.message, "error");
     }
+  }
+
+  const UpdatePerson = async() => {
+    try{
+      const {data} = await EmpleadoApi.put(`/employees/api/${id}`, formData);
+      if(data.response){
+        action(data.message, "success")
+        returnList();
+      }else{
+        action(data.message, "error")
+        returnList();
+      }
+    }catch(error: any){
+      action(error.message, "error");
+    }
+  }
+
+  const returnList = () => {
+    router.push('/listar-empleados');
   }
   
   const handleInputChange = (event: any) => {
@@ -89,21 +146,27 @@ const FormEmpleado = ({id, type, action}: Props) => {
     formData.job_position.trim() !== '';
   };
   return (
-    <Form
-      onSubmit={handleSubmit}
-    >
-      <div className='d-flex justify-content-center'>
-        <h2>
-          Nuevo Empleado
-        </h2>
-      </div>
-      <div>
-          <FormGroup floating>
+    <div className='crear-container'>
+      <ToastContainer 
+        position='top-right'
+        autoClose={2000}
+        newestOnTop={true}
+        pauseOnHover
+      />
+      <Form
+        className='p-3'
+        onSubmit={handleSubmit}
+      >
+        <div className='d-flex flex-row'>
+          <i className='fa fa-id-card mx-2 mt-3 d-flex justify-content-center' />
+          <FormGroup 
+            className='flex-grow-1'
+            floating
+          >
             <Input
               id="num_document"
               name='num_document'
               placeholder='Cedula'
-              className='input'
               value={formData.num_document}
               onChange={handleInputChange}
               invalid={!validData.num_document && sub}
@@ -116,92 +179,118 @@ const FormEmpleado = ({id, type, action}: Props) => {
             <Label for="num_document" className='ml-2'>
               Cedula
             </Label>
-          </FormGroup>
-      </div>
-      <div>
-        <FormGroup floating>
-          <Input
-            id="name"
-            name="name"
-            placeholder='Nombre'
-            value={formData.name}
-            onChange={handleInputChange}
-            invalid={!validData.name && sub}
-          />
-          <FormFeedback>
-            El Nombre es requerido
-          </FormFeedback>
-          <Label for="name">
-            Nombre
-          </Label>
-        </FormGroup>
-      </div>
-      <div>
-        <FormGroup floating>
-              <Input 
-                id="lastname"
-                name="lastname"
-                placeholder='Apellido'
-                value={formData.lastname}
-                onChange={handleInputChange}
-              />
-              <Label for="lastname">
-                Apellido
-              </Label>
-            </FormGroup>
-      </div>
-      
-      <div>
-          <FormGroup floating>
-            <Input 
-              id="cellphone"
-              name="cellphone"
-              placeholder='Telefono'
-              value={formData.cellphone}
+          </FormGroup>           
+        </div>
+        <div className='d-flex flex-row'>
+          <i className='fa fa-user mx-2 mt-3 d-flex justify-content-center' />
+          <FormGroup 
+            className='flex-grow-1'
+            floating
+          >
+            <Input
+              id="name"
+              name="name"
+              placeholder='Nombre'
+              value={formData.name}
               onChange={handleInputChange}
+              invalid={!validData.name && sub}
             />
-            <Label for="cellphone">
-              Telefono
+            <FormFeedback>
+              El Nombre es requerido
+            </FormFeedback>
+            <Label for="name">
+              Nombre
             </Label>
           </FormGroup>
-      </div>
+        </div>
+        <div className='d-flex flex-row'>
+          <i className='fa fa-user mx-2 mt-3 d-flex justify-content-center' />
+          <FormGroup 
+            className='flex-grow-1'
+            floating
+          >
+                <Input 
+                  id="lastname"
+                  name="lastname"
+                  placeholder='Apellido'
+                  value={formData.lastname}
+                  onChange={handleInputChange}
+                />
+                <Label for="lastname">
+                  Apellido
+                </Label>
+              </FormGroup>
+        </div>
+        
+        <div className='d-flex flex-row'>
+          <i className='fa fa-phone mx-2 mt-3 d-flex justify-content-center' />
+          <FormGroup 
+            className='flex-grow-1'
+            floating
+          >
+              <Input 
+                id="cellphone"
+                name="cellphone"
+                placeholder='Telefono'
+                value={formData.cellphone}
+                onChange={handleInputChange}
+              />
+              <Label for="cellphone">
+                Telefono
+              </Label>
+            </FormGroup>
+        </div>
 
-      <div>
-        <Col md={6}>
-          <FormGroup>
-            <Input
-              id="job_position"
-              name="job_position"
-              type="select"
-              value={formData.job_position}
-              onChange={handleInputChange}
-              invalid={!validData.job_position && sub}
+        <div className='d-flex flex-row'>
+          <i className='fa fa-person mx-2 mt-2 d-flex justify-content-center'></i>
+          <Col md={6}>
+            <FormGroup
+              className='mx-1'
             >
-              <option value="" disabled selected>
-                Escoja una opción...
-              </option>
-              {
-                JobOptions.map(({name, label}) => {
-                  return (
-                    <option value={name}>
-                      {label}
-                    </option>
-                  )
-                })
-              }
-            </Input>
-            <FormFeedback>
-              Debe seleccionar una opción
-          </FormFeedback>
-          </FormGroup>
-        </Col>
-      </div>
-      <div className='d-flex justify-content-center'>
-        <Button className='button' type='submit'>
-          Guardar
-        </Button>
-      </div>
-    </Form>
+              <Input
+                id="job_position"
+                name="job_position"
+                type="select"
+                value={formData.job_position}
+                onChange={handleInputChange}
+                invalid={!validData.job_position && sub}
+              >
+                <option value="" disabled selected>
+                  Escoja una opción...
+                </option>
+                {
+                  JobOptions.map(({name, label}) => {
+                    return (
+                      <option value={name}>
+                        {label}
+                      </option>
+                    )
+                  })
+                }
+              </Input>
+              <FormFeedback>
+                Debe seleccionar una opción
+            </FormFeedback>
+            </FormGroup>
+          </Col>
+        </div>
+        <div className='d-flex justify-content-center'>
+          <Button className='button' type='submit'>
+            {buttonName}
+          </Button>
+          {
+            type === "Crear" ?
+            <button className='button-clear' type='reset' onClick={clearFormData}>
+              <i className='fa fa-cancel'></i>
+            </button>
+            :
+            <button className='button-cancel' type='button' onClick={returnList}>
+              Cancelar
+            </button>
+          }
+        </div>
+      </Form>
+    </div>
   )
 }
 
