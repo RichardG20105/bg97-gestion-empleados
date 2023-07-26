@@ -66,6 +66,7 @@ body {
   li{
     position: relative;
     list-style: none;
+    margin-bottom: 10px;
 
     i{
       height: 40px;
@@ -140,16 +141,33 @@ body {
   }
 }
 
+.container{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
 
-.container-search {
+.header-title{
+  background-color: $bodycolor;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 20px;
+
+  width: 100%;
+}
+
+.crear-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  background: $bodycolor;
-  padding: 5px;
+  border-radius: 10px;
+  width: 50vw;
+  border: 1px solid $primary;
 
   .title{
-    font-size: 20px;
+    font-size: 15px;
     font-weight: 700;
     margin: 0 auto;
     margin-bottom: 10px;
@@ -159,6 +177,7 @@ body {
     background: $primary;
     color: white;
     padding: 5px;
+    margin-bottom: 5px;
 
     i {  
       font-size: 15px;
@@ -174,6 +193,91 @@ body {
 
     &:hover{
       background: $secondary;
+      box-shadow: 1px 1px 5px rgb(115, 115, 115);
     }
+  }
+}
+
+.list-container {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  border-radius: 10px;
+
+  .custom-table{
+    border-color: #8d8d8d;
+  }
+
+  .header-table{
+    background-color: $primary;
+    color: white;
+  }
+}
+
+
+.button-delete {
+  background: #bf0000;
+  border: none;
+  border-radius: 5px;
+  i{
+    color: white;
+  }
+
+  &:hover{
+    background: #d90000;
+    box-shadow: 1px 1px 5px rgb(115, 115, 115);
+
+  }
+}
+
+.button-edit {
+  background: $primary;
+  border: none;
+  border-radius: 5px;
+  margin-right: 10px;
+
+  width: 30px;
+  height: 30px;
+
+  i{
+    color: white;
+  }
+
+  &:hover{
+    background: $primaryOffset;
+    box-shadow: 1px 1px 5px rgb(115, 115, 115);
+  }
+}
+
+.button-clear{
+  background-color: #bf0000;
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+  width: 35px;
+  height: 35px;
+
+  i{
+    color: white;
+  }
+
+  &:hover{
+    background-color: #d90000;
+    box-shadow: 1px 1px 5px rgb(115, 115, 115);
+  }
+}
+
+.button-cancel {
+  background-color: #bf0000;
+  border: none;
+  border-radius: 5px;
+  margin-left: 10px;
+  width: 150px;
+  height: 35px;
+  color: white;
+
+  &:hover{
+    background-color: #d90000;
+    box-shadow: 1px 1px 5px rgb(115, 115, 115);
   }
 }
