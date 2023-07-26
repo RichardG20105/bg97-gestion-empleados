@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import React, { useState } from 'react'
 import { Container, Row, Col, Button, Collapse } from 'reactstrap'
-import Empleados from './Empleados';
 
 const Sidebar = ({isOpen, setIsOpen}: any) => {
   const [activeLink, setActiveLink] = useState<number | null>(null);
@@ -28,9 +27,15 @@ const Sidebar = ({isOpen, setIsOpen}: any) => {
         <hr className='divisor'/>
         <ul className={`nav-links`}>
           <li className={activeLink === 0 ? 'active' : ''}>
-            <Link href="/empleados" onClick={() => handleLinkClick(0)}>
-              <i className={`${isOpen ?"active" :""} fa fa-users`}></i>
-              <span className={`link-name ${isOpen && "active"}`}>Gestión de Empleados</span>
+            <Link href="/crear-empleado" onClick={() => handleLinkClick(0)}>
+              <i className={`${isOpen ?"active" :""} fa fa-user-plus`}></i>
+              <span className={`link-name ${isOpen && "active"}`}>Crear Empleado</span>
+            </Link>
+          </li>
+          <li className={activeLink === 1 ? 'active' : ''}>
+            <Link href="/listar-empleados" onClick={() => handleLinkClick(1)}>
+              <i className={`${isOpen ?"active" :""} fa fa-list`}></i>
+              <span className={`link-name ${isOpen && "active"}`}>Listar Empleados</span>
             </Link>
           </li>
         </ul>
