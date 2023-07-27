@@ -37,13 +37,13 @@ const FormEmpleado = ({id, type, action}: Props) => {
     name: "",
     lastname: "",
     cellphone: "",
-    job_position: " ",
+    job_position: "operario",
   })
 
   const [validData, setValidData] = useState({
     num_document: false,
     name: false,
-    job_position: false
+    // job_position: false
   });
 
 
@@ -62,7 +62,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
         setValidData({
           num_document: true,
           name: true,
-          job_position: true
+          // job_position: true
         });
       }
     } catch (error: any) {
@@ -89,14 +89,14 @@ const FormEmpleado = ({id, type, action}: Props) => {
       num_document: "",
       name: "",
       lastname: "",
-      job_position: "",
+      job_position: "operario",
       cellphone: "",
     })
 
     setValidData({
       name: false,
       num_document: false,
-      job_position: false
+      // job_position: false
     })
   }
 
@@ -142,8 +142,8 @@ const FormEmpleado = ({id, type, action}: Props) => {
 
   const isFormValid = () => {
     return formData.num_document.length === 10 &&
-    formData.name.trim() !== '' && 
-    formData.job_position.trim() !== '';
+    formData.name.trim() !== '';
+    // && formData.job_position.trim() !== '';
   };
   return (
     <div className='crear-container'>
@@ -241,7 +241,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
             </FormGroup>
         </div>
 
-        <div className='d-flex flex-row'>
+        {/* <div className='d-flex flex-row'>
           <i className='fa fa-person mx-2 mt-2 d-flex justify-content-center'></i>
           <Col md={6}>
             <FormGroup
@@ -273,7 +273,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
             </FormFeedback>
             </FormGroup>
           </Col>
-        </div>
+        </div> */}
         <div className='d-flex justify-content-center'>
           <Button className='button' type='submit'>
             {buttonName}

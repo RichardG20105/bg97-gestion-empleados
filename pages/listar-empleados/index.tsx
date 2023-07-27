@@ -11,8 +11,10 @@ const Inicio = () => {
         <link rel="icon" href="/logo.ico"/>
       </Head>
       <div className='header-title'>
-        <h1 className='text-center py-2'>Listado de Empleados</h1>
-        
+        <h1 className='text-center py-2'>
+        <i className='fa fa-list mx-3'/>
+          Listado de Empleados
+          </h1>
       </div>
       <ListEmpleado />
     </div>

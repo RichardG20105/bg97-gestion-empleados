@@ -4,12 +4,13 @@ import { Button, Pagination, PaginationItem, PaginationLink, Table } from 'react
 import UpdateEmpleado from './UpdateEmpleado';
 import EmpleadoHook from '@/hooks/EmpleadoHook';
 import Link from 'next/link';
+import Swal from 'sweetalert2'
 
 const ListEmpleado = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const MaxPagesDisplayed = 10;
 
-  const {Empleados, fetchEmpleados, loading, totalPages} = EmpleadoHook();
+  const {Empleados, fetchEmpleados, setLoading, loading, totalPages} = EmpleadoHook();
   
   useEffect(() => {
     fetchEmpleados(currentPage)
@@ -62,6 +63,49 @@ const ListEmpleado = () => {
   const handleLastPageClick = () => {
     setCurrentPage(totalPages);
   };
+
+  const deleteEmpleado = async(id:string) => {
+    try {
+      const { data } = await EmpleadoApi.post(`/employees/api/delete/${id}`);
+      
+      if(data.response){
+        setLoading(false)
+        fetchEmpleados(1);
+        Swal.fire(
+          'Eliminado',
+          `${data.message}`,
+          'success'
+        )
+      } else {
+        Swal.fire(
+          'Error',
+          `${data.message}`,
+          'error'
+        )
+      }
+    } catch (error: any) {
+      Swal.fire(
+        'Error',
+        `${error.message}`,
+        'error'
+      )
+    }
+  }
+
+  const handleDelete = (id: string) => {
+    Swal.fire({
+      title: 'Desea eliminarlo?',
+      text: 'No podra recuperarlo despues',
+      icon: 'question',
+      showCancelButton: true,
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminalo'
+    }).then((result) => {
+      if(result.isConfirmed){
+        deleteEmpleado(id);      
+      }
+    })
+  }
   
   return (
     <>
@@ -78,6 +122,7 @@ const ListEmpleado = () => {
             <thead>
               <tr>
                 <th className='header-table text-center'>#</th>
+                <th className='header-table text-center'>Cedula</th>
                 <th className='header-table text-center'>Nombres</th>
                 <th className='header-table text-center'>Apellidos</th>
                 <th className='header-table text-center'>Telefono</th>
@@ -89,6 +134,7 @@ const ListEmpleado = () => {
                 Empleados.map((row:any, index) => (
                   <tr key={index}>
                     <td className='text-center'>{index + 1}</td>
+                    <td>{row.num_document}</td>
                     <td>{row.name}</td>
                     <td>{row.lastname}</td>
                     <td>{row.cellphone}</td>
@@ -99,7 +145,7 @@ const ListEmpleado = () => {
                           <i className='fa fa-pencil'></i>
                         </button>
                       </Link>
-                        <button className='button-delete'>
+                        <button className='button-delete' onClick={() => handleDelete(row._id)}>
                           <i className='fa fa-trash'></i>
                         </button>
                       </div>
@@ -152,6 +198,12 @@ const ListEmpleado = () => {
               </PaginationItem>
             </Pagination>
           </div>
+        </div>
+      }
+      {
+        !loading &&
+        <div className='bg-light'>
+          <h1 className='text-center'>No existen registros</h1>
         </div>
       }
     </>
