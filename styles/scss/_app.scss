@@ -150,12 +150,11 @@ body {
 }
 
 .header-title{
-  background-color: $bodycolor;
   display: flex;
   justify-content: center;
   flex-direction: column;
   margin-bottom: 20px;
-
+  color: $primary;
   width: 100%;
 }
 
@@ -165,6 +164,7 @@ body {
   border-radius: 10px;
   width: 50vw;
   border: 1px solid $primary;
+  background: $bodycolor;
 
   .title{
     font-size: 15px;
