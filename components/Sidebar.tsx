@@ -1,10 +1,11 @@
+import { AuthContext } from '@/Context/AuthContext';
 import Link from 'next/link';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Container, Row, Col, Button, Collapse } from 'reactstrap'
 
 const Sidebar = ({isOpen, setIsOpen}: any) => {
   const [activeLink, setActiveLink] = useState<number | null>(null);
-
+  const {logout} = useContext(AuthContext)
   const handleLinkClick = (index: number) => {
     setActiveLink(index);
   };
@@ -36,6 +37,12 @@ const Sidebar = ({isOpen, setIsOpen}: any) => {
             <Link href="/listar-empleados" onClick={() => handleLinkClick(1)}>
               <i className={`${isOpen ?"active" :""} fa fa-list`}></i>
               <span className={`link-name ${isOpen && "active"}`}>Listar Empleados</span>
+            </Link>
+          </li>
+          <li className={activeLink === 3 ? 'active' : ''}>
+            <Link href="/" onClick={() => logout()}>
+              <i className={'fa fa-right-from-bracket'}></i>
+              <span className={`link-name ${isOpen && "active"}`}>Cerrar Sesión</span>
             </Link>
           </li>
         </ul>

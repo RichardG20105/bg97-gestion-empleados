@@ -1,7 +1,6 @@
-import { EmpleadoApi } from '@/apis/EmpleadoApi';
+import { EmpleadoApi } from '@/apis/Apis';
 import React, { useEffect, useState } from 'react'
-import { Button, Pagination, PaginationItem, PaginationLink, Table } from 'reactstrap';
-import UpdateEmpleado from './UpdateEmpleado';
+import {  Pagination, PaginationItem, PaginationLink, Table } from 'reactstrap';
 import EmpleadoHook from '@/hooks/EmpleadoHook';
 import Link from 'next/link';
 import Swal from 'sweetalert2'
@@ -18,17 +17,13 @@ const ListEmpleado = () => {
 
   const generatePageNumbers = () => {
     if (totalPages <= MaxPagesDisplayed) {
-      // If the total number of pages is less than or equal to the maximum number of pages to display,
-      // show all pages without ellipsis
       return Array.from({ length: totalPages }).map((_, index) => index + 1);
     }
 
-    // Calculate the number of pages to display on each side of the current page
     const pagesToShow = Math.floor((MaxPagesDisplayed - 1) / 2);
     let startPage = Math.max(currentPage - pagesToShow, 1);
     let endPage = Math.min(currentPage + pagesToShow, totalPages);
 
-    // Ensure that we have MAX_PAGES_DISPLAYED pages in total
     while (endPage - startPage < MaxPagesDisplayed - 1) {
       if (startPage > 1) {
         startPage--;
@@ -66,7 +61,11 @@ const ListEmpleado = () => {
 
   const deleteEmpleado = async(id:string) => {
     try {
-      const { data } = await EmpleadoApi.post(`/employees/api/delete/${id}`);
+      const { data } = await EmpleadoApi.post(`/employees/api/delete/${id}`,{
+        headers: {
+          "Authorization": localStorage.getItem('token')
+        }
+      });
       
       if(data.response){
         setLoading(false)

@@ -1,4 +1,4 @@
-import { EmpleadoApi } from '@/apis/EmpleadoApi'
+import { EmpleadoApi } from '@/apis/Apis'
 import React, { useEffect, useState } from 'react'
 
 const EmpleadoHook = () => {
@@ -9,9 +9,13 @@ const EmpleadoHook = () => {
   
 
   const fetchEmpleados = async(currentPage: number) => {
-    setEmpleados([])
+    setEmpleados([]);
     try {
-      const { data } = await EmpleadoApi.get(`/employees/api?limit=${limit}&page=${currentPage}`);
+      const { data } = await EmpleadoApi.get(`/employees/api?limit=${limit}&page=${currentPage}`,{
+        headers: {
+          "Authorization": localStorage.getItem('token')
+        }
+      });
       if(data.response){
         setEmpleados(data.data)
         setTotalPages(data.pagination.totalPages);
@@ -21,10 +25,12 @@ const EmpleadoHook = () => {
       console.log(error.message)
     }
   }
+
   return {
     fetchEmpleados,
     Empleados,
     loading,
+    setLoading,
     totalPages,
   }
 }

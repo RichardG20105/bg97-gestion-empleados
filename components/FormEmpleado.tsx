@@ -1,8 +1,7 @@
-import { EmpleadoApi } from '@/apis/EmpleadoApi';
+import { EmpleadoApi } from '@/apis/Apis';
 import React, { useEffect, useState } from 'react'
-import { Button, Col, Form, FormFeedback, FormGroup, Input, Label, Row } from 'reactstrap'
-import { ToastContainer ,toast } from 'react-toastify';
-import EmpleadoHook from '@/hooks/EmpleadoHook';
+import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
+import { ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/router';
 
 
@@ -54,9 +53,12 @@ const FormEmpleado = ({id, type, action}: Props) => {
   }, [])
 
   const fetchPerson = async() => {
-    console.log(id)
     try {
-      const {data} = await EmpleadoApi.get(`/employees/api/${id}`);
+      const {data} = await EmpleadoApi.get(`/employees/api/${id}`,{
+        headers: {
+          "Authorization": localStorage.getItem('token')
+        }
+      });
       if(data.response){
         setFormData(data.data)
         setValidData({
@@ -102,7 +104,11 @@ const FormEmpleado = ({id, type, action}: Props) => {
 
   const CreatePerson = async() => {
     try {
-      const {data} = await EmpleadoApi.post('/employees/api', formData)
+      const {data} = await EmpleadoApi.post('/employees/api', formData, {
+        headers: {
+          "Authorization": localStorage.getItem('token')
+        }
+      })
       if(data.response){
         action("Persona Creada Exitosamente", "success")
         clearFormData();
@@ -117,7 +123,11 @@ const FormEmpleado = ({id, type, action}: Props) => {
 
   const UpdatePerson = async() => {
     try{
-      const {data} = await EmpleadoApi.put(`/employees/api/${id}`, formData);
+      const {data} = await EmpleadoApi.put(`/employees/api/${id}`, formData, {
+        headers: {
+          "Authorization": localStorage.getItem('token')
+        }
+      });
       if(data.response){
         action(data.message, "success")
         returnList();
