@@ -1,13 +1,16 @@
-import React, { PropsWithChildren, useState } from 'react'
+import React, { PropsWithChildren, useContext, useState } from 'react'
 import Sidebar from '../Sidebar'
+import Home from '@/pages';
+import Acceso from '../Acceso';
+import { AuthContext } from '@/Context/AuthContext';
 
 const Layout = (props: PropsWithChildren) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isAuth, setIsAuth] = useState(true)
+  const {isLoggedIn} = useContext(AuthContext)
   return (
     <>
       {
-        isAuth ? 
+        isLoggedIn ? 
         <div>
           <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
           <div className={`sidecontent ${isOpen ?"active" :""}`}>
@@ -16,7 +19,7 @@ const Layout = (props: PropsWithChildren) => {
         </div>
 
         : <div>
-          Login
+          <Acceso />
         </div>
       }
     </>
