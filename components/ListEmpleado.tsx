@@ -1,15 +1,16 @@
 import { EmpleadoApi } from '@/apis/Apis';
 import React, { useEffect, useState } from 'react'
-import {  Pagination, PaginationItem, PaginationLink, Table } from 'reactstrap';
+import {  Button, Col, Form, FormGroup, Input, Label, Pagination, PaginationItem, PaginationLink, Row, Table } from 'reactstrap';
 import EmpleadoHook from '@/hooks/EmpleadoHook';
 import Link from 'next/link';
 import Swal from 'sweetalert2'
 
 const ListEmpleado = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [buscador, setBuscador] = useState('');
   const MaxPagesDisplayed = 10;
 
-  const {Empleados, fetchEmpleados, setLoading, loading, totalPages} = EmpleadoHook();
+  const {Empleados, fetchEmpleados, filterEmpleado,setLoading, loading, totalPages} = EmpleadoHook();
   
   useEffect(() => {
     fetchEmpleados(currentPage)
@@ -59,6 +60,11 @@ const ListEmpleado = () => {
     setCurrentPage(totalPages);
   };
 
+  const handleBuscador = (event:any) => {
+    const { value }= event.target;
+    setBuscador(value);
+  }
+
   const deleteEmpleado = async(id:string) => {
     try {
       const { data } = await EmpleadoApi.post(`/employees/api/delete/${id}`,{
@@ -105,12 +111,53 @@ const ListEmpleado = () => {
       }
     })
   }
-  
+
+  const handleSubmit = (event:any) => {
+    event.preventDefault();
+    if(buscador !== ''){
+      setLoading(false)
+      filterEmpleado(1, buscador);
+    }
+  }  
+
+  const handleClear = (event:any) => {
+    event.preventDefault();
+    setLoading(false)
+    fetchEmpleados(1);
+    setBuscador('')
+  }
   return (
     <>
+    <div className='form-filter'>
+      <Form
+        onSubmit={handleSubmit}
+        >
+          <div className='d-flex'>
+          <FormGroup floating >
+              <Input
+                id="buscador"
+                name="buscador"
+                value={buscador}
+                onChange={handleBuscador}
+                placeholder='Buscador'
+                className='filter-input'
+              />
+              <Label>Buscador</Label>
+            </FormGroup>
+            <button type='submit' className='button-search submit'>
+              <i className='fa fa-search'></i>
+            </button>
+            <button type='button' className='button-search clear' onClick={handleClear}>
+              <i className='fa fa-close' />
+            </button>
+          </div>
+      </Form>
+    </div>
+      
       {
         loading &&
         <div className='list-container'>
+            
           <Table
             className='custom-table mt-2'
             striped
