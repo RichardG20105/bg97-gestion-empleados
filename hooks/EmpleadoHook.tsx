@@ -26,8 +26,46 @@ const EmpleadoHook = () => {
     }
   }
 
+  const filterEmpleado = async(currentPage: number, buscador: string) => {
+    setEmpleados([]);
+    const filterName = {
+      name: buscador
+    }
+    const filterNumDocument = {
+      num_document: buscador
+    }
+    try {
+      const { data } = await EmpleadoApi.post(`/employees/api/filter?limit=${limit}&page=${currentPage}`,filterName,{
+        headers: {
+          "Authorization": localStorage.getItem('token')
+        }
+      });
+      if(data.response){
+        setEmpleados(data.data)
+        setTotalPages(data.pagination.totalPages);
+        setLoading(true)
+      }
+    } catch (error: any) {
+      try {
+        const { data } = await EmpleadoApi.post(`/employees/api/filter?limit=${limit}&page=${currentPage}`,filterNumDocument,{
+          headers: {
+            "Authorization": localStorage.getItem('token')
+          }
+        });
+        if(data.response){
+          setEmpleados(data.data)
+          setTotalPages(data.pagination.totalPages);
+          setLoading(true)
+        }
+      } catch (error:any) {
+        
+      }
+    }
+  }
+
   return {
     fetchEmpleados,
+    filterEmpleado,
     Empleados,
     loading,
     setLoading,

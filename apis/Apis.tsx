@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect } from "react";
 
 export const EmpleadoApi = axios.create({
-  baseURL: "https://twqqfaj1ae.execute-api.us-east-2.amazonaws.com/dev/gb97",
+  baseURL: "https://uk561ltns2.execute-api.us-east-1.amazonaws.com/prod/gb97",
 });
 
 export const GeneralApi = axios.create({

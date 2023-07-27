@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap'
 import { ToastContainer ,toast } from 'react-toastify';
-import { GeneralApi } from '@/apis/Apis';
+import { EmpleadoApi, GeneralApi } from '@/apis/Apis';
 import { AuthContext } from '@/Context/AuthContext';
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
 const Login = ({type}: Props) => {
   const {login} = useContext(AuthContext)
   const [Cedula, setCedula] = useState("")
+  const [tipo, setTipo] = useState("")
   const [formData, setFormData] = useState({
     userName: "",
     password: ""
@@ -25,7 +26,7 @@ const Login = ({type}: Props) => {
     if(type === "Acceso"){
       setLabels({
         titulo: "Control de Acceso",
-        boton: "Registrar",
+        boton: "Entrada",
       });
     } else{
       setLabels({
@@ -61,9 +62,29 @@ const Login = ({type}: Props) => {
     }
   };
 
-  const AccesoUser = (event: any) => {
+  const AccesoUser = async(event: any) => {
     event.preventDefault();
-    console.log(Cedula)
+    try {
+      const dataRegistro = {
+        type: tipo,
+        num_document: Cedula
+      }
+      const { data } = await EmpleadoApi.post('/employees/api/register', dataRegistro)
+
+      if(data.response){
+        toast(data.message, {
+          type: 'success'
+        });
+      } else{
+        toast(data.message, {
+          type: 'error'
+        });
+      }
+    } catch (error: any) {
+      toast(error.message, {
+        type: 'error'
+      });
+    }
   };
   return (
     <div className='login-container'>
@@ -132,15 +153,19 @@ const Login = ({type}: Props) => {
               value={Cedula}
               onChange={handleInputCedula}
               required
-            >
-
-            </Input>
+            />
             <Label>Cedula</Label>
           </FormGroup>
           <div className='d-flex justify-content-center'>
-            <Button color='primary' type='submit' >
+            <button className='button-control entrada' type='submit' onClick={() => setTipo('entrada')}>
               {labels.boton}
-            </Button>
+            </button>
+            {
+              type === 'Acceso' &&
+              <button className='button-control salida' type='submit' onClick={() => setTipo('salida')}> 
+                Salida
+              </button>
+            }
           </div>
         </Form>
       }
