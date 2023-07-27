@@ -12,9 +12,9 @@ export default function Home() {
         <meta name="description" content="Creado por GB97 Ecuador"/> 
         <link rel="icon" href="/logo.ico"/>
       </Head>
-      
       <h1 className="text-center pt-3">Gestión de Empleados</h1>
 
+      <div className="d-flex justify-content-center central-container">
       <div className="container-inicio">
         <h3 className="text-center">Bienvenido a la pagina Gestion de Empleados</h3>
         <h4 className="text-center">En esta página podra realizar los siguiente</h4>
@@ -37,5 +37,6 @@ export default function Home() {
         </Row>
       </div>
       </div>
+    </div>
   )
 }
