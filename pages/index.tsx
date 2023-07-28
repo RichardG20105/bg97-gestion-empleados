@@ -8,8 +8,8 @@ export default function Home() {
   return (
     <div>
       <Head>
-        <title>Gestión y control Empleados</title>
-        <meta name="description" content="Creado por GB97 Ecuador"/> 
+        <title>Gestión y control de Empleados</title>
+        <meta name="description" content="Gestion y control de Empleados"/> 
         <link rel="icon" href="/logo.ico"/>
       </Head>
       <h1 className="text-center pt-3">Gestión de Empleados</h1>
