@@ -22,7 +22,7 @@ const EmpleadoHook = () => {
         setLoading(true)
       }
     } catch (error: any) {
-      console.log(error.message)
+
     }
   }
 

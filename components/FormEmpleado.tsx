@@ -68,7 +68,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
         });
       }
     } catch (error: any) {
-      console.log(error.message)
+
     }
   }
   

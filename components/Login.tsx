@@ -57,7 +57,7 @@ const Login = ({type}: Props) => {
         toast(data.message,{type: 'error'})
       }
     } catch (error: any) {
-      console.log(error)
+
       toast(error.message,{type: 'error'})
     }
   };
