@@ -67,7 +67,7 @@ const ListEmpleado = () => {
 
   const deleteEmpleado = async(id:string) => {
     try {
-      const { data } = await EmpleadoApi.post(`/employees/api/delete/${id}`,{
+      const { data } = await EmpleadoApi.post(`/employees/api/delete/${id}`,null,{
         headers: {
           "Authorization": localStorage.getItem('token')
         }
