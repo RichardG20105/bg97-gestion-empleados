@@ -154,6 +154,92 @@ body {
   background-color: white;
   border: 1px solid $primary;
   border-radius: 0 10px 10px 10px;
+  transition: all 0.6s ease;
+
+
+  &.acceso{
+    height: 190px;
+    width: 420px;
+    transition: all 0.6s ease;
+    border-radius: 0 10px 0px 0px;
+  }
+}
+
+.list-access{
+  overflow-y: auto;
+  background-color: white;
+  border-bottom: 1px solid $primary;
+  border-left: 1px solid $primary;
+  border-right: 1px solid $primary;
+  width: 420px;
+  height: 190px;
+  border-radius: 0px 0px 10px 10px;
+  padding: 10px;
+  transition: all 0.6s ease;
+  color: white;
+
+  i{
+    color: $primary;
+    font-size: 100px;
+  }
+
+  .row-header{
+    display: flex;
+    height: 40px;
+    padding-left: 5px;
+    background-color: $primary;
+    color: white;
+
+    p{
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .nombre{
+      flex-grow: 1;
+      justify-content: center;
+      margin-top: 5px;
+    }
+
+    .hora {
+      justify-content: center;
+      width: 80px;
+      margin-top: 5px;
+
+    }
+  }
+
+  .row-access {
+    display: flex;
+    margin: 5px 0px;
+    padding-left: 5px;
+    height: 40px;
+
+    .nombre {
+      flex-grow: 1;
+      align-items: center;
+      margin-top: 5px;
+      p{font-weight: 400;}
+    }
+    
+    .hora {
+      justify-content: center;
+      width: 80px;
+      margin-top: 5px;
+      p{font-weight: 400;}
+    }
+    
+    &.entrada {
+      background-color: #69a200;
+    }
+
+    &.salida{
+      background-color: #bf0000;
+    }
+
+  }
+  &::-webkit-scrollbar{
+    display: none;
+  }
 }
 
 .sidebar{

@@ -3,6 +3,8 @@ import { Button, Form, FormGroup, Input, Label } from 'reactstrap'
 import { ToastContainer ,toast } from 'react-toastify';
 import { EmpleadoApi, GeneralApi } from '@/apis/Apis';
 import { AuthContext } from '@/Context/AuthContext';
+import EmpleadoHook from '@/hooks/EmpleadoHook';
+import ListAccesso from './ListAccesso';
 
 interface Props {
   type: "Login" | "Acceso"
@@ -10,6 +12,7 @@ interface Props {
 
 const Login = ({type}: Props) => {
   const {login} = useContext(AuthContext)
+  const { fetchAccesos, setIsLoadingAccesos, isLoadingAccesos, registerAcceso} = EmpleadoHook();
   const [Cedula, setCedula] = useState("")
   const [tipo, setTipo] = useState("")
   const [formData, setFormData] = useState({
@@ -24,6 +27,7 @@ const Login = ({type}: Props) => {
 
   useEffect(() => {
     if(type === "Acceso"){
+      fetchAccesos();
       setLabels({
         titulo: "Control de Acceso",
         boton: "Entrada",
@@ -69,14 +73,16 @@ const Login = ({type}: Props) => {
         type: tipo,
         num_document: Cedula
       }
-      const { data } = await EmpleadoApi.post('/employees/api/register', dataRegistro)
+      const result = await registerAcceso(dataRegistro);
 
-      if(data.response){
-        toast(data.message, {
+      if(result.response){
+        setCedula("");
+        fetchAccesos();
+        toast(result.message, {
           type: 'success'
         });
       } else{
-        toast(data.message, {
+        toast(result.message, {
           type: 'error'
         });
       }
@@ -87,7 +93,8 @@ const Login = ({type}: Props) => {
     }
   };
   return (
-    <div className='login-container'>
+    <>
+    <div className={`login-container ${type === "Acceso" && "acceso"}`}>
       <ToastContainer 
         position='top-right'
         autoClose={2000}
@@ -170,6 +177,11 @@ const Login = ({type}: Props) => {
         </Form>
       }
     </div>
+    {
+      type === "Acceso" && isLoadingAccesos &&
+      <ListAccesso /> 
+    }
+    </>
   )
 }
 
