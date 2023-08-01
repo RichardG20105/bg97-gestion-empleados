@@ -181,6 +181,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
               onChange={handleInputChange}
               minLength={10}
               maxLength={10}
+              required
             />
             <Label for="num_document" className='ml-2'>
               Cedula
@@ -199,6 +200,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
               placeholder='Nombre'
               value={formData.name}
               onChange={handleInputChange}
+              required
             />
             <Label for="name">
               Nombre
