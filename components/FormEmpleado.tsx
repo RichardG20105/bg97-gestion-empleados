@@ -179,13 +179,9 @@ const FormEmpleado = ({id, type, action}: Props) => {
               placeholder='Cedula'
               value={formData.num_document}
               onChange={handleInputChange}
-              invalid={!validData.num_document && sub}
               minLength={10}
               maxLength={10}
             />
-            <FormFeedback>
-              El Cedula es requerida
-            </FormFeedback>
             <Label for="num_document" className='ml-2'>
               Cedula
             </Label>
@@ -203,11 +199,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
               placeholder='Nombre'
               value={formData.name}
               onChange={handleInputChange}
-              invalid={!validData.name && sub}
             />
-            <FormFeedback>
-              El Nombre es requerido
-            </FormFeedback>
             <Label for="name">
               Nombre
             </Label>
