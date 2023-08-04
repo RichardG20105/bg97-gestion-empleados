@@ -1,9 +1,8 @@
 import { EmpleadoApi } from '@/apis/Apis';
 import React, { useEffect, useState } from 'react'
-import { Button, Form, FormFeedback, FormGroup, Input, Label } from 'reactstrap'
+import { Button, Form, FormGroup, Input, Label } from 'reactstrap'
 import { ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/router';
-
 
 const JobOptions = [
   {
@@ -68,7 +67,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
         });
       }
     } catch (error: any) {
-
+      action(error.message, "error");
     }
   }
   

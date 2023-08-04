@@ -1,6 +1,7 @@
+import { AuthContext } from '@/Context/AuthContext'
 import { EmpleadoApi } from '@/apis/Apis'
 import moment from 'moment'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 const EmpleadoHook = () => {
   const [Empleados, setEmpleados] = useState([])
@@ -9,8 +10,7 @@ const EmpleadoHook = () => {
   const [loading, setLoading] = useState(false)
   const [isLoadingAccesos, setIsLoadingAccesos] = useState(false)
   const [limit, setLimit] = useState(10)
-  const [totalPages, setTotalPages] = useState(0)
-  
+  const [totalPages, setTotalPages] = useState(0)  
 
   const fetchEmpleados = async(currentPage: number) => {
     setEmpleados([]);
@@ -26,7 +26,7 @@ const EmpleadoHook = () => {
         setLoading(true)
       }
     } catch (error: any) {
-
+      
     }
   }
 
@@ -62,7 +62,6 @@ const EmpleadoHook = () => {
           setLoading(true)
         }
       } catch (error:any) {
-        
       }
     }
   };

@@ -55,13 +55,12 @@ const Login = ({type}: Props) => {
     try {
       const { data } = await GeneralApi.post("/user/login", formData);
       if(data.response){
-        localStorage.setItem('token', data.data.token)
-        login();
+        const date = new Date();
+        login(data.data.token, date);
       } else{
         toast(data.message,{type: 'error'})
       }
     } catch (error: any) {
-
       toast(error.message,{type: 'error'})
     }
   };
