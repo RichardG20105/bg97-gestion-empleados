@@ -34,35 +34,39 @@ const EmpleadoHook = () => {
     setEmpleados([]);
     const filterName = {
       name: buscador
-    }
+    };
     const filterNumDocument = {
       num_document: buscador
-    }
+    };
     try {
       const { data } = await EmpleadoApi.post(`/employees/api/filter?limit=${limit}&page=${currentPage}`,filterName,{
         headers: {
           "Authorization": localStorage.getItem('token')
         }
       });
-      if(data.response){
+
+      if(data.data.length > 0){
         setEmpleados(data.data)
         setTotalPages(data.pagination.totalPages);
         setLoading(true)
-      }
-    } catch (error: any) {
-      try {
-        const { data } = await EmpleadoApi.post(`/employees/api/filter?limit=${limit}&page=${currentPage}`,filterNumDocument,{
+      } else {
+         try {
+          const { data } = await EmpleadoApi.post(`/employees/api/filter?limit=${limit}&page=${currentPage}`,filterNumDocument,{
           headers: {
             "Authorization": localStorage.getItem('token')
           }
-        });
-        if(data.response){
-          setEmpleados(data.data)
-          setTotalPages(data.pagination.totalPages);
-          setLoading(true)
+          });
+          if(data.data.length > 0){
+            setEmpleados(data.data)
+            setTotalPages(data.pagination.totalPages);
+            setLoading(true)
+          }
+        } catch (error:any) {
+          
         }
-      } catch (error:any) {
       }
+    } catch (error: any) {
+      
     }
   };
 
