@@ -10,7 +10,6 @@ interface Props{
 const ListAccesso = ({id}:Props) => {
   const { Accesos, fetchAccesos, isLoadingAccesos} = EmpleadoHook();
   useEffect(() => {
-    console.log("Hola")
     fetchAccesos(id);
   }, []);
 

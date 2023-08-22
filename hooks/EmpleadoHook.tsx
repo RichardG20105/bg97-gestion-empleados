@@ -91,7 +91,6 @@ const EmpleadoHook = () => {
   }
 
   const fetchAccesos = async(id: string) => {
-    console.log("Hola")
     setAccesos([]);
     setIsLoadingAccesos(false)
     const filter = {
@@ -100,12 +99,32 @@ const EmpleadoHook = () => {
     try {
       const { data } = await EmpleadoApi.post('/employees/api/check-employees-filter?limit=10000', filter)
       if(data.data.length > 0){
-        setAccesos(data.data);
-        setIsLoadingAccesos(true);
+        filterAccesos(data.data);
       }
+      
     } catch (error: any) {
-      console.log(error)
+
     }
+  }
+
+  const filterAccesos = (data: any[]) => {
+    const adjustedData = data.filter((item) => {
+      const originalDate = moment(item.date_check_in);
+      const adjustedDate = originalDate.subtract(5, 'hours');
+      return {
+        ...item,
+        date_check_in: adjustedDate.toISOString(), // Convierte la fecha a formato ISO para mantener el formato original
+      };
+    });
+    const todayAdjusted = moment().startOf('day');
+    const filteredData: any = adjustedData.filter((item) => {
+      const date_check_in = moment(item.date_check_in);
+    
+      // Verificar si la fecha 'createdAt' es igual al día de hoy
+      return date_check_in.isSame(todayAdjusted, 'day');
+    });
+    setAccesos(filteredData);
+    setIsLoadingAccesos(true);
   }
 
   return {
