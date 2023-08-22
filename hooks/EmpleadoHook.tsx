@@ -50,7 +50,6 @@ const EmpleadoHook = () => {
           "Authorization": localStorage.getItem('token')
         }
       });
-
       if(data.data.length > 0){
         setEmpleados(data.data)
         setTotalPages(data.pagination.totalPages);
@@ -79,9 +78,9 @@ const EmpleadoHook = () => {
   const registerAcceso = async(dataRegistro: any): Promise<{response: boolean, message: string}> => {
     try {
       const { data } = await EmpleadoApi.post('/employees/api/register', dataRegistro)
-      if(data.response){
+      if(data.data.length > 0){
         setIsLoadingAccesos(false);
-        fetchAccesos();
+        await fetchAccesos(dataRegistro.organization);
         return {response: data.response, message: data.message}
       } else{
         return {response: data.response, message: data.message}
@@ -91,36 +90,22 @@ const EmpleadoHook = () => {
     }
   }
 
-  const fetchAccesos = async() => {
-    setAccesos([])
+  const fetchAccesos = async(id: string) => {
+    console.log("Hola")
+    setAccesos([]);
+    setIsLoadingAccesos(false)
+    const filter = {
+      "employee.organization": id,
+    }
     try {
-      const { data } = await EmpleadoApi.get('/employees/api/check-employees?limit=none')
-      if(data.response){
-        filterAccesos(data.data);
+      const { data } = await EmpleadoApi.post('/employees/api/check-employees-filter?limit=10000', filter)
+      if(data.data.length > 0){
+        setAccesos(data.data);
         setIsLoadingAccesos(true);
       }
     } catch (error: any) {
-      
+      console.log(error)
     }
-  }
-
-  const filterAccesos = (data: any[]) => {
-    const adjustedData = data.filter((item) => {
-      const originalDate = moment(item.date_check_in);
-      const adjustedDate = originalDate.subtract(5, 'hours');
-      return {
-        ...item,
-        date_check_in: adjustedDate.toISOString(), // Convierte la fecha a formato ISO para mantener el formato original
-      };
-    });
-    const todayAdjusted = moment().startOf('day');
-    const filteredData: any = adjustedData.filter((item) => {
-      const date_check_in = moment(item.createdAt);
-    
-      // Verificar si la fecha 'createdAt' es igual al día de hoy
-      return date_check_in.isSame(todayAdjusted, 'day');
-    });
-    setAccesos(filteredData);
   }
 
   return {
