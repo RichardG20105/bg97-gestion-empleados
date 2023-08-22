@@ -3,11 +3,15 @@ import EmpleadoHook from '@/hooks/EmpleadoHook'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 
+interface Props{
+  id: string,
+}
 
-const ListAccesso = () => {
+const ListAccesso = ({id}:Props) => {
   const { Accesos, fetchAccesos, isLoadingAccesos} = EmpleadoHook();
   useEffect(() => {
-    fetchAccesos();
+    console.log("Hola")
+    fetchAccesos(id);
   }, []);
 
   const getTime = (fecha: string): string => {
