@@ -7,7 +7,6 @@ import React, { useEffect, useState } from 'react'
 const ListAccesso = () => {
   const { Accesos, fetchAccesos, isLoadingAccesos} = EmpleadoHook();
   useEffect(() => {
-    console.log("Hola")
     fetchAccesos();
   }, []);
 

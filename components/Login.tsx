@@ -11,8 +11,8 @@ interface Props {
 }
 
 const Login = ({type}: Props) => {
-  const {login} = useContext(AuthContext)
-  const { fetchAccesos, setIsLoadingAccesos, isLoadingAccesos, registerAcceso} = EmpleadoHook();
+  const { login } = useContext(AuthContext)
+  const { fetchAccesos, setIsLoadingAccesos, isLoadingAccesos, registerAcceso } = EmpleadoHook();
   const [Cedula, setCedula] = useState("")
   const [tipo, setTipo] = useState("")
   const [formData, setFormData] = useState({
@@ -56,12 +56,18 @@ const Login = ({type}: Props) => {
       const { data } = await GeneralApi.post("/user/login", formData);
       if(data.response){
         const date = new Date();
-        login(data.data.token, date);
+        const orgId = data.data.organizationId
+        const organizationId = await organizationInfo(orgId);
+        localStorage.setItem("orgId", orgId);
+        if(organizationId){
+          login(data.data.token, organizationId ,date);
+        }
       } else{
         toast(data.message,{type: 'error'})
       }
     } catch (error: any) {
-      toast(error.message,{type: 'error'})
+      const { data } = error.response;
+      toast(data.message,{type: 'error'})
     }
   };
 
@@ -91,6 +97,17 @@ const Login = ({type}: Props) => {
       });
     }
   };
+
+  const organizationInfo = async(id: string): Promise<string | null> => {
+    try {
+      const data = await GeneralApi.get(`/organizaciones/api/${id}`);
+      const organizationId = data.data.data.organizationId
+      return organizationId
+    } catch (error: any) {
+      toast(error.message,{type: 'error'})
+      return null;
+    }
+  }
   return (
     <>
     <div className={`login-container ${type === "Acceso" && "acceso"}`}>
@@ -114,6 +131,7 @@ const Login = ({type}: Props) => {
               value={formData.userName}
               onChange={handleInputChange}
               required
+              autoComplete='false'
             />
             <Label for="userName" className='ml-2'>
               Usuario
@@ -132,6 +150,7 @@ const Login = ({type}: Props) => {
                 onChange={handleInputChange}
                 type='password'
                 required
+                autoComplete='false'
               />
               <Label for="password" className='ml-2'>
                 Contraseña

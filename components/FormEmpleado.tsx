@@ -1,24 +1,9 @@
 import { EmpleadoApi } from '@/apis/Apis';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap'
 import { ToastContainer } from 'react-toastify';
 import { useRouter } from 'next/router';
-
-const JobOptions = [
-  {
-    name: "administrador",
-    label: "Administrador"
-  }, 
-  {
-    name: "operario",
-    label: "Operario"
-  },
-  {
-    name: "contador",
-    label: "Contador",
-
-  }
-]
+import { AuthContext } from '@/Context/AuthContext';
 
 interface Props {
   id?: string,
@@ -28,6 +13,7 @@ interface Props {
 
 const FormEmpleado = ({id, type, action}: Props) => {
   const router = useRouter();
+  const { organizationId } = useContext(AuthContext);
   const [sub, setSub] = useState(false)
   const buttonName = type === "Crear" ? "Guardar" :"Actualizar"
   const [formData, setFormData] = useState({
@@ -36,12 +22,12 @@ const FormEmpleado = ({id, type, action}: Props) => {
     lastname: "",
     cellphone: "",
     job_position: "operario",
+    organization: localStorage.getItem("orgId"),
   })
 
   const [validData, setValidData] = useState({
     num_document: false,
     name: false,
-    // job_position: false
   });
 
 
@@ -63,7 +49,6 @@ const FormEmpleado = ({id, type, action}: Props) => {
         setValidData({
           num_document: true,
           name: true,
-          // job_position: true
         });
       }
     } catch (error: any) {
@@ -90,14 +75,14 @@ const FormEmpleado = ({id, type, action}: Props) => {
       num_document: "",
       name: "",
       lastname: "",
-      job_position: "operario",
       cellphone: "",
+      job_position: "operario",
+      organization: "",
     })
 
     setValidData({
       name: false,
       num_document: false,
-      // job_position: false
     })
   }
 
@@ -116,6 +101,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
         action(data.message, "error");
       }
     } catch (error: any) {
+      console.log(error)
       action(error.message, "error");
     }
   }
@@ -152,7 +138,6 @@ const FormEmpleado = ({id, type, action}: Props) => {
   const isFormValid = () => {
     return formData.num_document.length === 10 &&
     formData.name.trim() !== '';
-    // && formData.job_position.trim() !== '';
   };
   return (
     <div className='crear-container'>
@@ -181,6 +166,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
               minLength={10}
               maxLength={10}
               required
+              autoComplete='false'
             />
             <Label for="num_document" className='ml-2'>
               Cedula
@@ -199,6 +185,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
               placeholder='Nombre'
               value={formData.name}
               onChange={handleInputChange}
+              autoComplete='false'
               required
             />
             <Label for="name">
@@ -218,6 +205,7 @@ const FormEmpleado = ({id, type, action}: Props) => {
                   placeholder='Apellido'
                   value={formData.lastname}
                   onChange={handleInputChange}
+                  autoComplete='false'
                 />
                 <Label for="lastname">
                   Apellido
@@ -237,46 +225,13 @@ const FormEmpleado = ({id, type, action}: Props) => {
                 placeholder='Telefono'
                 value={formData.cellphone}
                 onChange={handleInputChange}
+                autoComplete='false'
               />
               <Label for="cellphone">
                 Telefono
               </Label>
             </FormGroup>
         </div>
-
-        {/* <div className='d-flex flex-row'>
-          <i className='fa fa-person mx-2 mt-2 d-flex justify-content-center'></i>
-          <Col md={6}>
-            <FormGroup
-              className='mx-1'
-            >
-              <Input
-                id="job_position"
-                name="job_position"
-                type="select"
-                value={formData.job_position}
-                onChange={handleInputChange}
-                invalid={!validData.job_position && sub}
-              >
-                <option value="" disabled selected>
-                  Escoja una opción...
-                </option>
-                {
-                  JobOptions.map(({name, label}) => {
-                    return (
-                      <option value={name}>
-                        {label}
-                      </option>
-                    )
-                  })
-                }
-              </Input>
-              <FormFeedback>
-                Debe seleccionar una opción
-            </FormFeedback>
-            </FormGroup>
-          </Col>
-        </div> */}
         <div className='d-flex justify-content-center'>
           <Button className='button' type='submit'>
             {buttonName}

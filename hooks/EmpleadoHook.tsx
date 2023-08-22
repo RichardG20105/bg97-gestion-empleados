@@ -4,23 +4,27 @@ import moment from 'moment'
 import React, { useContext, useEffect, useState } from 'react'
 
 const EmpleadoHook = () => {
-  const [Empleados, setEmpleados] = useState([])
-  const [Accesos, setAccesos] = useState([])
+  const { organizationId } = useContext(AuthContext);
+  const [Empleados, setEmpleados] = useState([]);
+  const [Accesos, setAccesos] = useState([]);
 
-  const [loading, setLoading] = useState(false)
-  const [isLoadingAccesos, setIsLoadingAccesos] = useState(false)
-  const [limit, setLimit] = useState(10)
-  const [totalPages, setTotalPages] = useState(0)  
+  const [loading, setLoading] = useState(false);
+  const [isLoadingAccesos, setIsLoadingAccesos] = useState(false);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(0);
 
   const fetchEmpleados = async(currentPage: number) => {
     setEmpleados([]);
+    const filter = {
+      "organization.organizationId": organizationId,
+    }
     try {
-      const { data } = await EmpleadoApi.get(`/employees/api?limit=${limit}&page=${currentPage}`,{
+      const { data } = await EmpleadoApi.post(`/employees/api/filter?limit=${limit}&page=${currentPage}`, filter,{
         headers: {
           "Authorization": localStorage.getItem('token')
         }
       });
-      if(data.response){
+      if(data.data.length > 0){
         setEmpleados(data.data)
         setTotalPages(data.pagination.totalPages);
         setLoading(true)
@@ -33,10 +37,12 @@ const EmpleadoHook = () => {
   const filterEmpleado = async(currentPage: number, buscador: string) => {
     setEmpleados([]);
     const filterName = {
-      name: buscador
+      "name": buscador,
+      "organization.organizationId": organizationId,
     };
     const filterNumDocument = {
-      num_document: buscador
+      "num_document": buscador,
+      "organization.organizationId": organizationId,
     };
     try {
       const { data } = await EmpleadoApi.post(`/employees/api/filter?limit=${limit}&page=${currentPage}`,filterName,{
