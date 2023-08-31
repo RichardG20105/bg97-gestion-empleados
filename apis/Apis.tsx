@@ -1,8 +1,10 @@
 import axios from "axios";
 import { useEffect } from "react";
 
+const API = process.env.NEXT_PUBLIC_API;
+
 export const EmpleadoApi = axios.create({
-  baseURL: "https://twqqfaj1ae.execute-api.us-east-2.amazonaws.com/dev/gb97",
+  baseURL: API,
   headers: {
     "Accept-Language": "es"
   }
