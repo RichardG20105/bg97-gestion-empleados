@@ -3,8 +3,8 @@ import Acceso from '@/components/Acceso';
 import Head from 'next/head'
 import React from 'react'
 
-const asoprotexdijun = () => {
-  const data = accessData['/acceso/asoprotexdijun']
+const dijuntex = () => {
+  const data = accessData['/acceso/dijuntex']
   
   return (
     <div>
@@ -18,4 +18,4 @@ const asoprotexdijun = () => {
   )
 }
 
-export default asoprotexdijun;
+export default dijuntex;
