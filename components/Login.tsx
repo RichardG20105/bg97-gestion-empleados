@@ -6,49 +6,18 @@ import { AuthContext } from '@/Context/AuthContext';
 import EmpleadoHook from '@/hooks/EmpleadoHook';
 import ListAccesso from './ListAccesso';
 
-interface Props {
-  type: "Login" | "Acceso"
-}
 
-const Login = ({type}: Props) => {
-  const {login} = useContext(AuthContext)
-  const { fetchAccesos, setIsLoadingAccesos, isLoadingAccesos, registerAcceso} = EmpleadoHook();
-  const [Cedula, setCedula] = useState("")
-  const [tipo, setTipo] = useState("")
+const Login = () => {
+  const { login } = useContext(AuthContext)
   const [formData, setFormData] = useState({
     userName: "",
     password: ""
   });
 
-  const [labels, setLabels] = useState({
-    titulo: "",
-    boton: ""
-  })
-
-  useEffect(() => {
-    if(type === "Acceso"){
-      fetchAccesos();
-      setLabels({
-        titulo: "Control de Acceso",
-        boton: "Entrada",
-      });
-    } else{
-      setLabels({
-        titulo: "Iniciar Sesión",
-        boton: "Acceder",
-      });
-    }
-  }, [type])
-
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const handleInputCedula = (event: any) => {
-    const { value } = event.target;
-    setCedula(value);
-  }
 
   const LoginUser = async(event: any) => {
     event.preventDefault();
@@ -56,53 +25,42 @@ const Login = ({type}: Props) => {
       const { data } = await GeneralApi.post("/user/login", formData);
       if(data.response){
         const date = new Date();
-        login(data.data.token, date);
+        const orgId = data.data.organizationId
+        const organizationId = await organizationInfo(orgId);
+        localStorage.setItem("orgId", orgId);
+        if(organizationId){
+          login(data.data.token, organizationId ,date);
+        }
       } else{
         toast(data.message,{type: 'error'})
       }
     } catch (error: any) {
-      toast(error.message,{type: 'error'})
+      const { data } = error.response;
+      toast(data.message,{type: 'error'})
     }
   };
 
-  const AccesoUser = async(event: any) => {
-    event.preventDefault();
+ 
+  const organizationInfo = async(id: string): Promise<string | null> => {
     try {
-      const dataRegistro = {
-        type: tipo,
-        num_document: Cedula
-      }
-      const result = await registerAcceso(dataRegistro);
-
-      if(result.response){
-        setCedula("");
-        fetchAccesos();
-        toast(result.message, {
-          type: 'success'
-        });
-      } else{
-        toast(result.message, {
-          type: 'error'
-        });
-      }
+      const data = await GeneralApi.get(`/organizaciones/api/${id}`);
+      const organizationId = data.data.data.organizationId
+      return organizationId
     } catch (error: any) {
-      toast(error.message, {
-        type: 'error'
-      });
+      toast(error.message,{type: 'error'})
+      return null;
     }
-  };
+  }
   return (
-    <>
-    <div className={`login-container ${type === "Acceso" && "acceso"}`}>
-      <ToastContainer 
-        position='top-right'
-        autoClose={2000}
-        newestOnTop={true}
-        pauseOnHover
-      />
-      <h2 className='text-center'>{labels.titulo}</h2>
-      {
-        type === "Login" &&
+    <div className='acceso-container'>
+      <div className={`login-container`}>
+        <ToastContainer 
+          position='top-right'
+          autoClose={2000}
+          newestOnTop={true}
+          pauseOnHover
+        />
+        <h2 className='text-center'>Iniciar Sesión</h2>
         <Form onSubmit={LoginUser} >
           <FormGroup 
             floating
@@ -114,6 +72,7 @@ const Login = ({type}: Props) => {
               value={formData.userName}
               onChange={handleInputChange}
               required
+              autoComplete='false'
             />
             <Label for="userName" className='ml-2'>
               Usuario
@@ -132,55 +91,20 @@ const Login = ({type}: Props) => {
                 onChange={handleInputChange}
                 type='password'
                 required
+                autoComplete='false'
               />
               <Label for="password" className='ml-2'>
                 Contraseña
               </Label>
-            </FormGroup>
-            
-          
-          <div className='d-flex justify-content-center'>
-            <Button color='primary' type='submit' >
-              {labels.boton}
-            </Button>
-          </div>
-        </Form>   
-      }
-      
-      {
-        type === "Acceso" &&
-        <Form onSubmit={AccesoUser}>
-          
-          <FormGroup floating>
-            <Input 
-              id="num_document"
-              name="num_document"
-              placeholder='Cedula'
-              value={Cedula}
-              onChange={handleInputCedula}
-              required
-            />
-            <Label>Cedula</Label>
           </FormGroup>
           <div className='d-flex justify-content-center'>
-            <button className='button-control entrada' type='submit' onClick={() => setTipo('entrada')}>
-              {labels.boton}
-            </button>
-            {
-              type === 'Acceso' &&
-              <button className='button-control salida' type='submit' onClick={() => setTipo('salida')}> 
-                Salida
-              </button>
-            }
+            <Button color='primary' type='submit' >
+              Acceder
+            </Button>
           </div>
-        </Form>
-      }
+        </Form>      
+      </div>
     </div>
-    {
-      type === "Acceso" && isLoadingAccesos &&
-      <ListAccesso /> 
-    }
-    </>
   )
 }
 
